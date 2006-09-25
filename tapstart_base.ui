@@ -1,0 +1,227 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>TapStart_Base</class>
+ <widget class="QWidget" name="TapStart_Base" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>282</width>
+    <height>150</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>1</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>TapStart</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="1" column="0" colspan="3" >
+    <widget class="Line" name="line" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" >
+    <widget class="QLabel" name="lblTempo" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>3</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>20</pointsize>
+       <weight>75</weight>
+       <italic>false</italic>
+       <bold>true</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="text" >
+      <string>XXX</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3" >
+    <widget class="QPushButton" name="btnTap" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>3</hsizetype>
+       <vsizetype>3</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>15</pointsize>
+       <weight>75</weight>
+       <italic>false</italic>
+       <bold>true</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="text" >
+      <string>Tap!</string>
+     </property>
+     <property name="default" >
+      <bool>true</bool>
+     </property>
+     <property name="flat" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QCheckBox" name="cBTaps" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>Autostart after # taps:</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QSpinBox" name="sBTaps" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="maximum" >
+      <number>20</number>
+     </property>
+     <property name="minimum" >
+      <number>2</number>
+     </property>
+     <property name="value" >
+      <number>4</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="1" >
+      <widget class="QSpinBox" name="sBMeterTop" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="minimum" >
+        <number>1</number>
+       </property>
+       <property name="value" >
+        <number>4</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QSpinBox" name="sBMeterBottom" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="minimum" >
+        <number>1</number>
+       </property>
+       <property name="value" >
+        <number>4</number>
+       </property>
+      </widget>
+     </item>
+     <item rowspan="2" row="0" column="0" >
+      <widget class="QLabel" name="lblMeter" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>Meter:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>sBMeterTop</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="lblTempoBuddy" >
+     <property name="text" >
+      <string>Tempo (bpm):</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>btnTap</tabstop>
+  <tabstop>cBTaps</tabstop>
+  <tabstop>sBTaps</tabstop>
+  <tabstop>sBMeterTop</tabstop>
+  <tabstop>sBMeterBottom</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>cBTaps</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sBTaps</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>137</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>273</x>
+     <y>75</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
