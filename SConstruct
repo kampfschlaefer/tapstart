@@ -22,7 +22,7 @@ def CheckPKGConfig( context, pkgname ):
 	return ret[0]
 
 conf = Configure( env, custom_tests={'CheckPKGConfig' : CheckPKGConfig } )
-#conf.CheckPKGConfig( 'jack' )
+conf.CheckPKGConfig( 'jack' )
 conf.CheckPKGConfig( 'QtCore' )
 conf.CheckPKGConfig( 'QtGui' )
 
@@ -30,5 +30,6 @@ env = conf.Finish()
 
 env.UIBuilder( target="tapstart_base.h", source="tapstart_base.ui")
 env.MOCBuilder( target="tapstart.moc", source="tapstart.h")
-env.Program( target='tapStart', source = ['tapstart.cpp','main.cpp'] )
+env.MOCBuilder( target="qjack.moc", source="qjack.h")
+env.Program( target='tapStart', source = ['qjack.cpp','tapstart.cpp','main.cpp'] )
 
