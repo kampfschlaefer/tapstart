@@ -74,9 +74,9 @@ void QJack::timebaseCallback( jack_transport_state_t, jack_nframes_t nframes, ja
 	double time_beats_per_minute = qjack->_tempo;
 	volatile int time_reset = 1;
 
-	double min;			/* minutes since frame 0 */
-	long abs_tick;			/* ticks since frame 0 */
-	long abs_beat;			/* beats since frame 0 */
+	double min;				/* minutes since frame 0 */
+	double abs_tick;		/* ticks since frame 0 */
+	double abs_beat;		/* beats since frame 0 */
 
 	if ( new_pos || time_reset ) {
 
@@ -97,21 +97,22 @@ void QJack::timebaseCallback( jack_transport_state_t, jack_nframes_t nframes, ja
 		abs_tick = min * pos->beats_per_minute * pos->ticks_per_beat;
 		abs_beat = abs_tick / pos->ticks_per_beat;
 
-		pos->bar = abs_beat / pos->beats_per_bar;
-		pos->beat = abs_beat - ( pos->bar * pos->beats_per_bar ) + 1;
-		pos->tick = abs_tick - ( abs_beat * pos->ticks_per_beat );
+		pos->bar = int( abs_beat / pos->beats_per_bar );
+		pos->beat = int( abs_beat - ( pos->bar * pos->beats_per_bar ) + 1 );
+		pos->tick = int( abs_tick - ( abs_beat * pos->ticks_per_beat ) );
 		pos->bar_start_tick = pos->bar * pos->beats_per_bar *
 			pos->ticks_per_beat;
 		pos->bar++;		/* adjust start to bar 1 */
 
 	} else {
 		/* Compute BBT info based on previous period. */
-		pos->tick +=
+		pos->tick += int(
 			nframes * pos->ticks_per_beat * pos->beats_per_minute
-			/ ( pos->frame_rate * 60 );
+			/ ( pos->frame_rate * 60 )
+			);
 
 		while ( pos->tick >= pos->ticks_per_beat ) {
-			pos->tick -= pos->ticks_per_beat;
+			pos->tick -= int( pos->ticks_per_beat );
 			if ( ++pos->beat > pos->beats_per_bar ) {
 				pos->beat = 1;
 				++pos->bar;
