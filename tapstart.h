@@ -12,10 +12,17 @@ class TapStart : public QWidget, private Ui_TapStart_Base
 		TapStart( QWidget* =0 );
 		~TapStart();
 
+	signals:
+		void startTransport();
+		void setTempo( double );
+
 	private slots:
 		void on_btnTap_clicked();
+		void startMusic();
 
 	private:
+		double tempo() const;
+		double mean() const;
 		QList<int> _times;
 };
 
