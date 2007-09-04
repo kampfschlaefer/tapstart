@@ -219,8 +219,19 @@
      </item>
     </layout>
    </item>
+   <item row="6" column="0" colspan="3" >
+    <layout class="QVBoxLayout" >
+     <property name="spacing" >
+      <number>0</number>
+     </property>
+    </layout>
+   </item>
    <item row="5" column="0" colspan="3" >
-    <layout class="QVBoxLayout" />
+    <widget class="Line" name="line_2" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

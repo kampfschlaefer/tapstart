@@ -7,27 +7,42 @@
 
 QJack::QJack( QObject* p ) : QObject( p ), _jackclient( 0 ), _tempo( 120 ), _meterTop( 4 ), _meterBottom( 4 ) {
 	qDebug() << "QJack::QJack(" << p << ")";
+#ifdef HAVE_JACK
 	_jackclient = jack_client_new( "tapStart" );
 	if ( _jackclient == 0 )
-		qFatal( "Couldn't connect to jackd." );
+		qWarning( "Couldn't connect to jackd." );
 
-	jack_activate( _jackclient );
-	int ret = jack_set_timebase_callback( _jackclient, 1, &timebaseCallback, this );
-	qDebug() << " jack_set_timebase_callback returned with" << ret;
+	if ( _jackclient ) {
+		jack_activate( _jackclient );
+		int ret = jack_set_timebase_callback( _jackclient, 1, &timebaseCallback, this );
+		qDebug() << " jack_set_timebase_callback returned with" << ret;
+	}
+#endif
 }
 QJack::~QJack() {
-	transport_stop();
-	jack_deactivate( _jackclient );
-	jack_client_close( _jackclient );
+#ifdef HAVE_JACK
+	if ( _jackclient ) {
+		transport_stop();
+		jack_deactivate( _jackclient );
+		jack_client_close( _jackclient );
+	}
+#endif
 }
 
 void QJack::transport_start() {
-	qDebug() << "QJack::transport_start()";
-	jack_transport_start( _jackclient );
+#ifdef HAVE_JACK
+	if ( _jackclient ) {
+		qDebug() << "QJack::transport_start()";
+		jack_transport_start( _jackclient );
+	}
+#endif
 }
 
 void QJack::transport_stop() {
-	jack_transport_stop( _jackclient );
+#ifdef HAVE_JACK
+	if ( _jackclient )
+		jack_transport_stop( _jackclient );
+#endif
 }
 
 void QJack::transport_setTempo( double tempo ) {

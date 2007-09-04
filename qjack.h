@@ -12,6 +12,8 @@ class QJack : public QObject
 		QJack( QObject* =0 );
 		~QJack();
 
+		bool jackEnabled() { return _jackclient; }
+
 	public slots:
 		void transport_start();
 		void transport_stop();

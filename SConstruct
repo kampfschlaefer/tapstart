@@ -1,6 +1,19 @@
 #!/usr/bin/python
 
-env = Environment()#tools=['default','qt'])
+import os
+from pkgconfig import *
+
+buildenv={}
+if os.environ.has_key('PATH'):
+	buildenv['PATH']=os.environ['PATH']
+else:
+	buildenv['PATH']=''
+if os.environ.has_key('PKG_CONFIG_PATH'):
+	buildenv['PKG_CONFIG_PATH']=os.environ['PKG_CONFIG_PATH']
+else:
+	buildenv['PKG_CONFIG_PATH']=''
+
+env = Environment( tools=['default'], ENV=buildenv )
 
 uic = Builder(action= "uic $SOURCES > $TARGET", suffix = '.h', srcsuffix = '.uic' )
 moc = Builder(action= "moc $SOURCES > $TARGET", suffix = '.h', srcsuffix = '.moc' )
@@ -8,25 +21,29 @@ moc = Builder(action= "moc $SOURCES > $TARGET", suffix = '.h', srcsuffix = '.moc
 env['BUILDERS']['UIBuilder'] = uic
 env['BUILDERS']['MOCBuilder'] = moc
 
-def CheckPKGConfig( context, pkgname ):
-	import SCons.Util, os
 
-	context.Message( "Checking for " + pkgname + "..." )
-	ret = context.TryAction( 'pkg-config --exists ' + pkgname )
-	if ret[0] == 1:
-		tmp = os.popen( 'pkg-config --libs-only-l ' + pkgname ).read().strip()
-		env.Append( LIBS = SCons.Util.CLVar( tmp ) )
-		tmp = os.popen( 'pkg-config --libs-only-L ' + pkgname ).read().strip()
-		env.Append( LIBPATH = SCons.Util.CLVar( tmp ) )
-		tmp = ' ' + os.popen( 'pkg-config --cflags ' + pkgname ).read().strip()
-		env.Append( CCFLAGS = SCons.Util.CLVar( tmp ) )
-	context.Result( ret[0] )
-	return ret[0]
+conf = Configure( env, custom_tests={ 'CheckForPKGConfig' : CheckForPKGConfig, 'CheckForPKG' : CheckForPKG, 'GetPKGFlags' : GetPKGFlags } )
 
-conf = Configure( env, custom_tests={'CheckPKGConfig' : CheckPKGConfig } )
-conf.CheckPKGConfig( 'jack' )
-conf.CheckPKGConfig( 'QtCore' )
-conf.CheckPKGConfig( 'QtGui' )
+if not conf.CheckForPKGConfig():
+	Exit(1)
+
+needed = conf.GetPKGFlags( 'QtCore' )
+if needed == 0:
+	Exit(1)
+env.MergeFlags( needed )
+needed = conf.GetPKGFlags( 'QtGui' )
+if needed == 0:
+	Exit(1)
+env.MergeFlags( needed )
+needed = conf.GetPKGFlags( 'ofqf' )
+if needed == 0:
+	Exit(1)
+env.MergeFlags( needed )
+
+tmp = conf.GetPKGFlags( 'jack' )
+if not tmp == 0:
+	env.MergeFlags( tmp )
+	env.MergeFlags( "-DHAVE_JACK" )
 
 env = conf.Finish()
 
