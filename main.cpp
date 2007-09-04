@@ -8,12 +8,12 @@ int main( int argc, char** argv )
 {
 	QApplication* app = new QApplication( argc, argv );
 
-	QJack* qjack = new QJack( app );
+	//QJack* qjack = new QJack( app );
 
 	TapStart* w = new TapStart();
 
-	QObject::connect( w, SIGNAL( setTempo( double ) ), qjack, SLOT( transport_setTempo( double ) ) );
-	QObject::connect( w, SIGNAL( startTransport() ), qjack, SLOT( transport_start() ) );
+	//QObject::connect( w, SIGNAL( setTempo( double ) ), qjack, SLOT( transport_setTempo( double ) ) );
+	//QObject::connect( w, SIGNAL( startTransport() ), qjack, SLOT( transport_start() ) );
 
 	//QObject::connect( w, SIGNAL( clicked() ), w, SLOT( close() ) );
 
@@ -22,6 +22,6 @@ int main( int argc, char** argv )
 	int ret = app->exec();
 
 	delete w;
-	delete qjack;
+	//delete qjack;
 	return ret;
 }

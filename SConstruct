@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 env = Environment()#tools=['default','qt'])
 
 uic = Builder(action= "uic $SOURCES > $TARGET", suffix = '.h', srcsuffix = '.uic' )
@@ -29,6 +31,7 @@ conf.CheckPKGConfig( 'QtGui' )
 env = conf.Finish()
 
 env.UIBuilder( target="tapstart_base.h", source="tapstart_base.ui")
+env.UIBuilder( target="tapstart_oscpath_base.h", source="tapstart_oscpath_base.ui")
 env.MOCBuilder( target="tapstart.moc", source="tapstart.h")
 env.MOCBuilder( target="qjack.moc", source="qjack.h")
 env.Program( target='tapStart', source = ['qjack.cpp','tapstart.cpp','main.cpp'] )

@@ -7,6 +7,10 @@
 #include <QtCore/QTime>
 #include <QtCore/QTimer>
 
+OscPath::OscPath( QWidget* p ) : QWidget( p ) {
+	setupUi( this );
+}
+
 TapStart::TapStart( QWidget* p ) : QWidget( p ) {
 	qDebug() << "TapStart::TapStart(" << p << ")";
 	setupUi( this );
@@ -14,6 +18,7 @@ TapStart::TapStart( QWidget* p ) : QWidget( p ) {
 	QAction* actionquit = new QAction( "Quit", this );
 	actionquit->setShortcut( tr( "Ctrl + Q" ) );
 	connect( actionquit, SIGNAL( triggered() ), this, SLOT( on_btnTap_clicked() ) );
+	addAction( actionquit );
 }
 TapStart::~TapStart() {
 	qDebug() << "TapStart::~TapStart()";
@@ -67,5 +72,18 @@ double TapStart::mean() const {
 
 double TapStart::tempo() const {
 	return 60000/mean();
+}
+
+void TapStart::on_btnMoreOsc_clicked() {
+	qDebug() << "TapStart::on_btnMoreOsc_clicked()";
+	_oscpaths.push_back( new OscPath( this ) );
+	vboxLayout->addWidget( _oscpaths.back() );
+	connect( _oscpaths.back(), SIGNAL( destroyed( QObject* ) ), this, SLOT( removeOscPath( QObject* ) ) );
+}
+
+void TapStart::removeOscPath( QObject* ) {
+	foreach( QPointer<OscPath> p, _oscpaths )
+		if ( p == 0 )
+			_oscpaths.removeAll( p );
 }
 
