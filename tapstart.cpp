@@ -78,8 +78,11 @@ void TapStart::on_btnTap_clicked() {
 
 		qDebug() << "TapStart::on_btnTap_clicked()" << time_elapsed;
 
-		emit setTempo( tempo() );
 		emit setDelay( mean() );
+		emit setTempo( tempo() );
+
+		if ( _times.size() == sBBars->value()*sBMeterTop->value() -1 )
+			QTimer::singleShot( mean(), this, SLOT( startMusic() ) );
 
 		lblTempo->setText( QString::number( tempo(), 'f', 1 ) );
 
