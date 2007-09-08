@@ -33,6 +33,12 @@
        <height>40</height>
       </size>
      </property>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>200</height>
+      </size>
+     </property>
      <property name="font" >
       <font>
        <family>Sans Serif</family>
@@ -124,6 +130,9 @@
      </property>
      <item row="0" column="1" >
       <widget class="QSpinBox" name="sBMeterTop" >
+       <property name="focusPolicy" >
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="minimum" >
         <number>1</number>
        </property>
@@ -156,6 +165,9 @@
    </item>
    <item row="3" column="0" colspan="3" >
     <widget class="QGroupBox" name="jackBox" >
+     <property name="focusPolicy" >
+      <enum>Qt::NoFocus</enum>
+     </property>
      <property name="title" >
       <string>Start Jack Transport</string>
      </property>
@@ -199,6 +211,9 @@
     <layout class="QHBoxLayout" >
      <item>
       <widget class="QPushButton" name="btnMoreOsc" >
+       <property name="focusPolicy" >
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text" >
         <string>More OSC</string>
        </property>

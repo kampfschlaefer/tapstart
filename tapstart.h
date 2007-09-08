@@ -2,6 +2,7 @@
 #define TABSTART_H
 
 #include <QtGui/QWidget>
+#include <QtGui/QMainWindow>
 #include <QtCore/QList>
 #include <QtCore/QPointer>
 #include "tapstart_base.h"
@@ -27,7 +28,7 @@ class OscPath : public QWidget, private Ui_OscPath_Base
 		QOscClient* _client;
 };
 
-class TapStart : public QWidget, private Ui_TapStart_Base
+class TapStart : public QMainWindow, private Ui_TapStart_Base
 {
 	Q_OBJECT
 	public:
@@ -47,6 +48,8 @@ class TapStart : public QWidget, private Ui_TapStart_Base
 
 		void removeOscPath( QObject* );
 
+		void aboutTapStart();
+
 	private:
 		double tempo() const;
 		double mean() const;
@@ -55,6 +58,8 @@ class TapStart : public QWidget, private Ui_TapStart_Base
 		QList< QPointer<OscPath> > _oscpaths;
 
 		QJack* _jack;
+
+		QWidget* _mw;
 };
 
 #endif // TABSTART_H
