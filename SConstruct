@@ -35,7 +35,7 @@ needed = conf.GetPKGFlags( 'QtGui' )
 if needed == 0:
 	Exit(1)
 env.MergeFlags( needed )
-needed = conf.GetPKGFlags( 'ofqf' )
+needed = conf.GetPKGFlags( 'ofqf', "0.1.1" )
 if needed == 0:
 	Exit(1)
 env.MergeFlags( needed )
