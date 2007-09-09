@@ -1,4 +1,5 @@
 <ui version="4.0" >
+ <author>Arnold Krille</author>
  <class>TapStart_Base</class>
  <widget class="QWidget" name="TapStart_Base" >
   <property name="geometry" >
@@ -6,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>337</width>
-    <height>270</height>
+    <height>281</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -257,6 +258,7 @@
   <tabstop>sBMeterTop</tabstop>
   <tabstop>sBMeterBottom</tabstop>
  </tabstops>
+ <includes/>
  <resources/>
  <connections>
   <connection>
