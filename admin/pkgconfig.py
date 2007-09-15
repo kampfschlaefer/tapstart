@@ -1,7 +1,8 @@
-##!/usr/bin/python
+#!/usr/bin/python
 
 #
 # Taken from http://www.scons.org/wiki/UsingPkgConfig
+# and heavily modified
 #
 
 #
@@ -60,4 +61,11 @@ def GetPKGFlags( context, name, version="" ):
 
 	context.Result( True )
 	return ret
+
+def generate( env, **kw ):
+	env['PKGCONFIG_TESTS' ] = { 'CheckForPKGConfig' : CheckForPKGConfig, 'CheckForPKG' : CheckForPKG, 'GetPKGFlags' : GetPKGFlags }
+
+def exists( env ):
+	return 1
+
 

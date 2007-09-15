@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import os
-from pkgconfig import *
 
 buildenv={}
 if os.environ.has_key('PATH'):
@@ -13,7 +12,7 @@ if os.environ.has_key('PKG_CONFIG_PATH'):
 else:
 	buildenv['PKG_CONFIG_PATH']=''
 
-env = Environment( tools=['default'], ENV=buildenv )
+env = Environment( tools=['default','pkgconfig'], toolpath=["admin"], ENV=buildenv )
 
 uic = Builder(action= "uic $SOURCES > $TARGET", suffix = '.h', srcsuffix = '.uic' )
 moc = Builder(action= "moc $SOURCES > $TARGET", suffix = '.h', srcsuffix = '.moc' )
@@ -22,7 +21,7 @@ env['BUILDERS']['UIBuilder'] = uic
 env['BUILDERS']['MOCBuilder'] = moc
 
 
-conf = Configure( env, custom_tests={ 'CheckForPKGConfig' : CheckForPKGConfig, 'CheckForPKG' : CheckForPKG, 'GetPKGFlags' : GetPKGFlags } )
+conf = Configure( env, custom_tests=env['PKGCONFIG_TESTS'] )
 
 if not conf.CheckForPKGConfig():
 	Exit(1)
