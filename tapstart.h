@@ -31,6 +31,15 @@ class QJack;
 
 class QOscClient;
 
+class OscArgument : public QWidget
+{
+	Q_OBJECT
+	public:
+		OscArgument( QWidget* );
+
+		QVariant value;
+};
+
 class OscPath : public QWidget, private Ui_OscPath_Base
 {
 	Q_OBJECT
@@ -43,8 +52,12 @@ class OscPath : public QWidget, private Ui_OscPath_Base
 	private slots:
 		void updateOsc();
 
+		void on_btnMore_clicked();
+		void on_btnLess_clicked();
+
 	private:
 		QOscClient* _client;
+		QList< OscArgument* > _arguments;
 };
 
 class TapStart : public QMainWindow, private Ui_TapStart_Base

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>337</width>
-    <height>281</height>
+    <height>346</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -258,7 +258,6 @@
   <tabstop>sBMeterTop</tabstop>
   <tabstop>sBMeterBottom</tabstop>
  </tabstops>
- <includes/>
  <resources/>
  <connections>
   <connection>

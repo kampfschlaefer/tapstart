@@ -23,18 +23,26 @@
 #include <QtCore/QDebug>
 #include <QtCore/QTime>
 #include <QtCore/QTimer>
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QMessageBox>
+#include <QtGui/QtGui>
+
 #include <qoscclient.h>
 
 #include "qjack.h"
 
+OscArgument::OscArgument( QWidget* p ) : QWidget( p ) {
+	QVBoxLayout* layout = new QVBoxLayout( this );
+	QComboBox* box = new QComboBox( this );
+	box->setEditable( false );
+	box->addItems( QStringList() << "Integer" << "Float" << "Text" << "Tempo (Integer)" << "Tempo (Float)" << "Tempo (String" );
+	layout->addWidget( box );
+	QLineEdit* line = new QLineEdit( this );
+	layout->addWidget( line );
+}
+
 OscPath::OscPath( QWidget* p ) : QWidget( p ), _client( 0 ) {
 	setupUi( this );
 
-	value->addItems( QStringList() << "Tempo (bpm)" << "Delay" << "Delay / 2" << "Delay / 3" << "Delay / 4" );
+	//value->addItems( QStringList() << "Tempo (bpm)" << "Delay" << "Delay / 2" << "Delay / 3" << "Delay / 4" );
 
 	if ( ! _client ) {
 		_client = new QOscClient( QHostAddress::LocalHost, port->value(), this );
@@ -46,7 +54,7 @@ OscPath::OscPath( QWidget* p ) : QWidget( p ), _client( 0 ) {
 void OscPath::setDelay( double d ) {
 	if ( groupBox->isChecked() ) {
 		qDebug() << "OscPath::setDelay(" << d << ")";
-		QString tmp = value->currentText();
+		/*QString tmp = value->currentText();
 		if ( tmp == "Tempo (bpm)" )
 			_client->sendData( path->text(), 60000/d );
 		if ( tmp == "Delay" )
@@ -56,7 +64,7 @@ void OscPath::setDelay( double d ) {
 		if ( tmp == "Delay / 3" )
 			_client->sendData( path->text(), d/3 );
 		if ( tmp == "Delay / 4" )
-			_client->sendData( path->text(), d/4 );
+			_client->sendData( path->text(), d/4 );*/
 	}
 }
 
@@ -65,6 +73,15 @@ void OscPath::updateOsc() {
 	QHostAddress tmp( hostName->text() );
 	qDebug() << tmp.toString();
 	_client->setAddress( tmp, port->value() );
+}
+
+void OscPath::on_btnMore_clicked() {
+	_arguments.push_back( new OscArgument( this ) );
+	hboxLayout1->addWidget( _arguments.back() );
+}
+void OscPath::on_btnLess_clicked() {
+	delete _arguments.back();
+	_arguments.pop_back();
 }
 
 TapStart::TapStart( QJack* j, QWidget* p ) : QMainWindow( p ), _jack( j ) , _mw( new QWidget( this ) ) {
