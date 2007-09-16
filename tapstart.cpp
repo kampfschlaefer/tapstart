@@ -37,6 +37,9 @@ OscArgument::OscArgument( QWidget* p ) : QWidget( p ) {
 		<< "Custom (int)" << "Custom (double)" << "Custom (string)"
 		<< "Tempo (int)" << "Tempo (double)" << "Tempo (string)"
 		<< "Delay (int)" << "Delay (double)" << "Delay (string)"
+		<< "Delay/2 (int)" << "Delay/2 (double)" << "Delay/2 (string)"
+		<< "Delay/3 (int)" << "Delay/3 (double)" << "Delay/3 (string)"
+		<< "Delay/4 (int)" << "Delay/4 (double)" << "Delay/4 (string)"
 		);
 	connect( _box, SIGNAL( currentIndexChanged( int ) ), this, SLOT( box_changed() ) );
 	layout->addWidget( _box );
@@ -46,13 +49,21 @@ OscArgument::OscArgument( QWidget* p ) : QWidget( p ) {
 }
 QVariant OscArgument::value( double delay ) {
 	QVariant v;
+	int div = 1;
+
+	if ( _box->currentText().contains( "/2" ) )
+		div = 2;
+	if ( _box->currentText().contains( "/3" ) )
+		div = 3;
+	if ( _box->currentText().contains( "/4" ) )
+		div = 4;
 
 	if ( _box->currentText().contains( "Custom" ) )
 		v = _line->text();
 	if ( _box->currentText().contains( "Tempo" ) )
 		v = 60000/delay;
 	if ( _box->currentText().contains( "Delay" ) )
-		v = delay;
+		v = delay/div;
 
 	QString type = _box->currentText().section( QRegExp( "[\\(\\)]" ), 1, 1 );
 	type.replace( "string", "QString" );
@@ -80,13 +91,10 @@ OscPath::OscPath( QWidget* p ) : QWidget( p ), _client( 0 ) {
 
 void OscPath::setDelay( double d ) {
 	if ( groupBox->isChecked() ) {
-		qDebug() << "OscPath::setDelay(" << d << ")";
 
 		QVariantList args;
 		foreach( OscArgument* arg, _arguments )
 			args.push_back( arg->value( d ) );
-
-		qDebug() << " Arguments are:" << args;
 
 		_client->sendData( path->text(), args );
 	}
