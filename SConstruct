@@ -46,6 +46,9 @@ if not tmp == 0:
 
 env = conf.Finish()
 
+#debug
+env.MergeFlags( "-Wall -Werror -g" )
+
 env.UIBuilder( target="tapstart_base.h", source="tapstart_base.ui")
 env.UIBuilder( target="tapstart_oscpath_base.h", source="tapstart_oscpath_base.ui")
 env.MOCBuilder( target="tapstart.moc", source="tapstart.h")
