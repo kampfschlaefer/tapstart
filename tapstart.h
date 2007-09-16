@@ -31,13 +31,23 @@ class QJack;
 
 class QOscClient;
 
+class QLineEdit;
+class QComboBox;
+
 class OscArgument : public QWidget
 {
 	Q_OBJECT
 	public:
 		OscArgument( QWidget* );
 
-		QVariant value;
+		QVariant value( double delay );
+
+	private slots:
+		void box_changed();
+
+	private:
+		QComboBox* _box;
+		QLineEdit* _line;
 };
 
 class OscPath : public QWidget, private Ui_OscPath_Base

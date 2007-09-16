@@ -8,11 +8,11 @@
 
     This program and libraries are distributed in the hope that it will be
     useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
     Library General Public License for more details.
 
     You should have received a copy of the GNU Library General Public License
-    along with this package; see the file gpl-2.0.txt.  If not, write to
+    along with this package; see the file gpl-2.0.txt. If not, write to
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301 USA.
 */
@@ -31,18 +31,45 @@
 
 OscArgument::OscArgument( QWidget* p ) : QWidget( p ) {
 	QVBoxLayout* layout = new QVBoxLayout( this );
-	QComboBox* box = new QComboBox( this );
-	box->setEditable( false );
-	box->addItems( QStringList() << "Integer" << "Float" << "Text" << "Tempo (Integer)" << "Tempo (Float)" << "Tempo (String" );
-	layout->addWidget( box );
-	QLineEdit* line = new QLineEdit( this );
-	layout->addWidget( line );
+	_box = new QComboBox( this );
+	_box->setEditable( false );
+	_box->addItems( QStringList()
+		<< "Custom (int)" << "Custom (double)" << "Custom (string)"
+		<< "Tempo (int)" << "Tempo (double)" << "Tempo (string)"
+		<< "Delay (int)" << "Delay (double)" << "Delay (string)"
+		);
+	connect( _box, SIGNAL( currentIndexChanged( int ) ), this, SLOT( box_changed() ) );
+	layout->addWidget( _box );
+
+	_line = new QLineEdit( this );
+	layout->addWidget( _line );
 }
+QVariant OscArgument::value( double delay ) {
+	QVariant v;
+
+	if ( _box->currentText().contains( "Custom" ) )
+		v = _line->text();
+	if ( _box->currentText().contains( "Tempo" ) )
+		v = 60000/delay;
+	if ( _box->currentText().contains( "Delay" ) )
+		v = delay;
+
+	QString type = _box->currentText().section( QRegExp( "[\\(\\)]" ), 1, 1 );
+	type.replace( "string", "QString" );
+	v.convert( QVariant::nameToType( type.toStdString().c_str() ) );
+
+	return v;
+}
+void OscArgument::box_changed() {
+	if ( _box->currentText().contains( "Custom" ) )
+		_line->setEnabled( true );
+	else
+		_line->setEnabled( false );
+}
+
 
 OscPath::OscPath( QWidget* p ) : QWidget( p ), _client( 0 ) {
 	setupUi( this );
-
-	//value->addItems( QStringList() << "Tempo (bpm)" << "Delay" << "Delay / 2" << "Delay / 3" << "Delay / 4" );
 
 	if ( ! _client ) {
 		_client = new QOscClient( QHostAddress::LocalHost, port->value(), this );
@@ -54,17 +81,14 @@ OscPath::OscPath( QWidget* p ) : QWidget( p ), _client( 0 ) {
 void OscPath::setDelay( double d ) {
 	if ( groupBox->isChecked() ) {
 		qDebug() << "OscPath::setDelay(" << d << ")";
-		/*QString tmp = value->currentText();
-		if ( tmp == "Tempo (bpm)" )
-			_client->sendData( path->text(), 60000/d );
-		if ( tmp == "Delay" )
-			_client->sendData( path->text(), d );
-		if ( tmp == "Delay / 2" )
-			_client->sendData( path->text(), d/2 );
-		if ( tmp == "Delay / 3" )
-			_client->sendData( path->text(), d/3 );
-		if ( tmp == "Delay / 4" )
-			_client->sendData( path->text(), d/4 );*/
+
+		QVariantList args;
+		foreach( OscArgument* arg, _arguments )
+			args.push_back( arg->value( d ) );
+
+		qDebug() << " Arguments are:" << args;
+
+		_client->sendData( path->text(), args );
 	}
 }
 
@@ -92,7 +116,7 @@ TapStart::TapStart( QJack* j, QWidget* p ) : QMainWindow( p ), _jack( j ) , _mw(
 	connect( btnMoreOsc, SIGNAL( clicked() ), this, SLOT( on_btnMoreOsc_clicked() ) );
 
 	QMenu* filemenu = menuBar()->addMenu( "File" );
-	QAction* actionquit = filemenu->addAction( "Quit", this, SLOT( close() ), Qt::CTRL + Qt::Key_Q );
+	filemenu->addAction( "Quit", this, SLOT( close() ), Qt::CTRL + Qt::Key_Q );
 
 	QMenu* helpmenu = menuBar()->addMenu( "Help" );
 	helpmenu->addAction( "About TapStart...", this, SLOT( aboutTapStart() ) );
@@ -159,7 +183,6 @@ double TapStart::tempo() const {
 }
 
 void TapStart::on_btnMoreOsc_clicked() {
-	qDebug() << "TapStart::on_btnMoreOsc_clicked()";
 	_oscpaths.push_back( new OscPath( this ) );
 	vboxLayout->addWidget( _oscpaths.back() );
 	connect( _oscpaths.back(), SIGNAL( destroyed( QObject* ) ), this, SLOT( removeOscPath( QObject* ) ) );
@@ -174,14 +197,19 @@ void TapStart::removeOscPath( QObject* ) {
 
 void TapStart::aboutTapStart() {
 	QMessageBox::about( this, "About TapStart", "\
-		<h1>TapStart (v0.1)</h1>\
-		<p>See <a href=\"http://www.arnoldarts.de/drupal/?q=TapStart\">www.arnoldarts.de/drupal/?q=TapStart</a> for more info and documentation.</p>\
-		<h4>Copyright 2007 Arnold Krille <arnold@arnoldarts.de></h4>\
-		<p>License: GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> (a copy of the license is also included in the source-package.)</p>\
-		<h4>First steps:</h4>\
-		<p>Tap your tempo on the big button. The label below will show the (averaged) tempo you tap.</p>\
-		<p>If jack is running when the app starts, the jack tempo will be updated as you tap. If you check the corresponding option the jack transport will also be started.</p>\
-		<p>TapStart can also send OSC-messages, just click \"More OSC\" to add OSC-messages to be send on each tempo update. That way you can control sequencers and delay-effects.</p>\
-		" );
+<h1>TapStart (v0.1)</h1>\
+<p>See <a href=\"http://www.arnoldarts.de/drupal/?q=TapStart\">www.arnoldarts.de/drupal/?q=TapStart</a> \
+for more info and documentation.</p>\
+<h4>Copyright 2007 Arnold Krille <arnold@arnoldarts.de></h4>\
+<p>License: GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> (a \
+copy of the license is also included in the source-package.)</p>\
+<h4>First steps:</h4>\
+<p>Tap your tempo on the big button. The label below will show the (averaged) \
+tempo you tap.</p>\
+<p>If jack is running when the app starts, the jack tempo will be updated as you\
+tap. If you check the corresponding option the jack transport will also be started.</p>\
+<p>TapStart can also send OSC-messages, just click \"More OSC\" to add OSC-messages \
+to be send on each tempo update. That way you can control sequencers and delay-effects.</p>\
+" );
 }
 
